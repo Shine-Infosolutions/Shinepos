@@ -30,18 +30,6 @@ const SettingsManagement = ({ activeCategory: initialCategory = 'SYSTEM' }) => {
     }
   };
 
-<<<<<<< HEAD
-  const fetchPlanLimits = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/settings/plan-limits`);
-      setPlanLimits(response.data.limits);
-    } catch (error) {
-      console.error('Error fetching plan limits:', error);
-    }
-  };
-
-=======
->>>>>>> 783f3bf66760485d9c0f978037ee0ae65ec7b69f
   const updateSetting = async (key, value, category, description) => {
     setSaving(true);
     try {
@@ -54,21 +42,6 @@ const SettingsManagement = ({ activeCategory: initialCategory = 'SYSTEM' }) => {
     }
   };
 
-<<<<<<< HEAD
-  const updatePlanLimits = async (plan, limits) => {
-    setSaving(true);
-    try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/settings/plan-limits`, { plan, limits });
-      fetchPlanLimits();
-    } catch (error) {
-      console.error('Error updating plan limits:', error);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-=======
->>>>>>> 783f3bf66760485d9c0f978037ee0ae65ec7b69f
   const handleInputChange = (setting, newValue) => {
     const updatedSettings = { ...settings };
     const categorySettings = updatedSettings[setting.category] || [];

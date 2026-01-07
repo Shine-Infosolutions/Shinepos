@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,10 +9,8 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [loginType, setLoginType] = useState('super');
 
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,17 +18,32 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    const result = await login(
-      formData.email, 
-      formData.password, 
-      loginType === 'restaurant' ? formData.restaurantSlug : null
-    );
+    try {
+      const endpoint = loginType === 'super' 
+        ? `${import.meta.env.VITE_API_URL}/api/auth/login`
+        : `${import.meta.env.VITE_API_URL}/api/auth/login`;
 
-    if (result.success) {
-      setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 1500);
-    } else {
-      setError(result.error);
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          restaurantSlug: loginType === 'restaurant' ? formData.restaurantSlug : undefined
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        alert('Login successful!');
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
     }
     setLoading(false);
   };
@@ -42,28 +54,6 @@ const Login = () => {
       [e.target.name]: e.target.value
     });
   };
-
-  if (success) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-bounce">
-          <div className="text-6xl mb-4 animate-pulse">
-            🎉🎊✨
-          </div>
-          <div className="text-green-600 mb-4 animate-pulse">
-            <svg className="w-16 h-16 mx-auto animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2 animate-pulse">Thank You! 🥳</h2>
-          <p className="text-gray-600 animate-bounce mb-4">Login successful! Redirecting to dashboard...</p>
-          <div className="text-4xl animate-bounce">
-            🚀💫⭐
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -95,7 +85,7 @@ const Login = () => {
               }`}
               onClick={() => setLoginType('restaurant')}
             >
-              Restaurant User
+              Restaurant Admin
             </button>
           </div>
         </div>
@@ -169,6 +159,16 @@ const Login = () => {
             )}
           </button>
         </form>
+
+        <div className="text-center mt-6">
+          <span className="text-gray-600">Don't have an account? </span>
+          <button
+            onClick={() => navigate('/register')}
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Register here
+          </button>
+        </div>
       </div>
     </div>
   );

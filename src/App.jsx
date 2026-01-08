@@ -10,6 +10,7 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/super-admin" element={<SuperAdminDashboard />} />
           <Route path="/dashboard" element={<SuperAdminDashboard />} />
           <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
           <Route path="/" element={<Navigate to="/login" replace />} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const AddCategory = ({ onSuccess }) => {
+const AddCategory = ({ onSuccess, onBack }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -48,7 +48,13 @@ const AddCategory = ({ onSuccess }) => {
 
   return (
     <div>
-        <h2 className="text-2xl font-bold mb-4">Add Category</h2>
+      <button
+        onClick={onBack}
+        className="mb-4 flex items-center text-gray-600 hover:text-gray-900"
+      >
+        <span className="mr-2">←</span> Back to List
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Add Category</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>

@@ -1,23 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCategory } from './hooks/useCategory';
-import EditCategory from './EditCategory';
 
-const CategoryList = () => {
-  const { categories, loading, deleteCategory, toggleCategoryStatus, fetchCategories } = useCategory();
-  const [editingCategory, setEditingCategory] = useState(null);
-
-  const handleEdit = (category) => {
-    setEditingCategory(category);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingCategory(null);
-  };
-
-  const handleEditSuccess = () => {
-    setEditingCategory(null);
-    fetchCategories();
-  };
+const CategoryList = ({ onEdit }) => {
+  const { categories, loading, deleteCategory, toggleCategoryStatus } = useCategory();
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this category?')) return;
@@ -29,9 +14,8 @@ const CategoryList = () => {
   }
 
   return (
-    <>
-      <div className="bg-white rounded-lg shadow">
-        <div className="overflow-x-auto">
+    <div className="bg-white rounded-lg shadow">
+      <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -67,7 +51,7 @@ const CategoryList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleEdit(category)}
+                      onClick={() => onEdit(category)}
                       className="text-indigo-600 hover:text-indigo-900 mr-4"
                     >
                       Edit
@@ -86,14 +70,6 @@ const CategoryList = () => {
         </table>
       </div>
     </div>
-    {editingCategory && (
-      <EditCategory
-        category={editingCategory}
-        onClose={handleCloseEdit}
-        onSuccess={handleEditSuccess}
-      />
-    )}
-    </>
   );
 };
 

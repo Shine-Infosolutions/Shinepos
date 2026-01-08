@@ -11,7 +11,7 @@ const RestaurantList = () => {
   const fetchRestaurants = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurants/all`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurants/all/restaurant`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
